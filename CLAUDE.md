@@ -57,6 +57,12 @@ approach.
   a safety net that collapses empty groups — but the safety net must be
   **gated on "no saved layout"**, or it destroys intentionally-empty groups
   in user grids.
+- **Never hard-code `Packages/<Name>/...` resource paths in Python.** Users
+  clone the repo under arbitrary folder names (Windows bug report: syntax
+  file failed to load from `Packages/st_md_toc/`). Use
+  `sublime.find_resources("file name")` to locate package resources, with a
+  graceful fallback (`scope:text.plain`). JSON menu files (`edit_settings`
+  `base_file`) still need the canonical folder name — document that.
 - **Mousemaps are global.** A `Default.sublime-mousemap` binding hijacks
   clicks everywhere unless given a `"context"` (same context system as
   keymaps; custom keys via `EventListener.on_query_context`).

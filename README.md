@@ -37,8 +37,10 @@ git clone https://github.com/iamwrm/st_md_toc.git "$HOME/.config/sublime-text/Pa
 git clone https://github.com/iamwrm/st_md_toc.git "$env:APPDATA\Sublime Text\Packages\MarkdownTOC"
 ```
 
-> The folder **must** be named `MarkdownTOC` — the syntax and settings files
-> are referenced by that path.
+> Name the folder `MarkdownTOC` (note: `git clone` defaults to `st_md_toc` —
+> add the target name as shown above). The plugin itself locates its files
+> dynamically, but the *Preferences ▸ Package Settings* menu entry references
+> the `MarkdownTOC` path.
 
 ## Usage
 

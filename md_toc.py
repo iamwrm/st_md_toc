@@ -10,7 +10,7 @@ import sublime
 import sublime_plugin
 
 SETTINGS_FILE = "Markdown TOC.sublime-settings"
-TOC_SYNTAX = "Packages/MarkdownTOC/Markdown TOC.sublime-syntax"
+TOC_SYNTAX_NAME = "Markdown TOC.sublime-syntax"
 
 # view.settings() keys
 S_IS_TOC = "md_toc"                  # marks the TOC view
@@ -25,6 +25,14 @@ _pending_refresh = {}  # source view id -> debounce token
 
 def plugin_settings():
     return sublime.load_settings(SETTINGS_FILE)
+
+
+def toc_syntax_path():
+    """Locate the TOC syntax regardless of the installed folder name."""
+    resources = sublime.find_resources(TOC_SYNTAX_NAME)
+    if resources:
+        return resources[0]
+    return "scope:text.plain"  # graceful fallback: plain text
 
 
 # ---------------------------------------------------------------------------
@@ -248,7 +256,10 @@ def open_toc(window, source_view):
     toc_view = window.new_file()
     toc_view.set_scratch(True)
     toc_view.set_read_only(True)
-    toc_view.assign_syntax(TOC_SYNTAX)
+    try:
+        toc_view.assign_syntax(toc_syntax_path())
+    except Exception:
+        pass  # syntax is cosmetic; never block the TOC on it
 
     vs = toc_view.settings()
     vs.set(S_IS_TOC, True)
