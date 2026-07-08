@@ -20,6 +20,10 @@ custom sidebar panel.
 - Understands `#` ATX headings, Setext (`===` / `---`) headings, skips fenced
   code blocks, and strips inline markup (links, `code`, *emphasis*) from
   entries.
+- **Copy code block** — right-click anywhere inside a fenced ` ``` ` block and
+  choose *Copy Code Block*; the block's contents (fences stripped, trailing
+  newline included) land on the clipboard. Also in the Command Palette as
+  *Markdown TOC: Copy Code Block at Caret*.
 
 ## Installation
 
@@ -50,6 +54,7 @@ git clone https://github.com/iamwrm/st_md_toc.git "$env:APPDATA\Sublime Text\Pac
 | Reveal a heading | Click its TOC entry |
 | Jump to a heading (and focus the file) | `Enter` or double-click in the TOC |
 | Force a refresh | Command Palette ▸ *Markdown TOC: Refresh* |
+| Copy a code block | Right-click inside it ▸ *Copy Code Block* (or Command Palette at caret) |
 
 Closing the TOC (toggle again, or just close its tab) restores your previous
 window layout.

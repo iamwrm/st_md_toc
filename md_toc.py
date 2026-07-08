@@ -100,6 +100,34 @@ def parse_headings(view):
     return headings
 
 
+FENCE_LINE_RE = re.compile(r"^(`{3,}|~{3,})")
+
+
+def fenced_code_blocks(lines):
+    """Return [(open_row, close_row_or_None)] for column-0 fenced blocks.
+
+    Only plain, unindented ``` / ~~~ pairs are considered. An unclosed
+    fence extends to EOF (close_row is None).
+    """
+    blocks = []
+    open_row = None
+    fence = ""
+    for i, line in enumerate(lines):
+        m = FENCE_LINE_RE.match(line)
+        if open_row is None:
+            if m:
+                open_row, fence = i, m.group(1)
+        elif m:
+            run = m.group(1)
+            rest = line[len(run):].strip()
+            if run[0] == fence[0] and len(run) >= len(fence) and not rest:
+                blocks.append((open_row, i))
+                open_row = None
+    if open_row is not None:
+        blocks.append((open_row, None))
+    return blocks
+
+
 def is_markdown(view):
     if not view or view.settings().get(S_IS_TOC):
         return False
@@ -365,6 +393,57 @@ class MarkdownTocRefreshCommand(sublime_plugin.WindowCommand):
 
     def is_enabled(self):
         return find_toc_view(self.window) is not None
+
+
+class MarkdownCopyCodeBlockCommand(sublime_plugin.TextCommand):
+    """Copy the contents of the fenced code block under the mouse / caret.
+
+    Invoked from the right-click context menu (uses the click position via
+    want_event) or the Command Palette (falls back to the caret).
+    """
+
+    def want_event(self):
+        return True
+
+    def _point(self, event):
+        if event is not None:
+            return self.view.window_to_text((event["x"], event["y"]))
+        sel = self.view.sel()
+        return sel[0].begin() if sel else None
+
+    def _block_content(self, event):
+        """Content lines of the block at the event/caret, or None."""
+        if not is_markdown(self.view):
+            return None
+        pt = self._point(event)
+        if pt is None:
+            return None
+        row = self.view.rowcol(pt)[0]
+        lines = self.view.substr(
+            sublime.Region(0, self.view.size())).split("\n")
+        for open_row, close_row in fenced_code_blocks(lines):
+            end = close_row if close_row is not None else len(lines) - 1
+            if open_row <= row <= end:
+                last = close_row if close_row is not None else len(lines)
+                return lines[open_row + 1:last]
+        return None
+
+    def run(self, edit, event=None):
+        content = self._block_content(event)
+        if content is None:
+            sublime.status_message("Markdown TOC: no code block here")
+            return
+        text = "\n".join(content)
+        sublime.set_clipboard(text + "\n" if text else "")
+        n = len(content)
+        sublime.status_message(
+            "Markdown TOC: copied %d line%s" % (n, "" if n == 1 else "s"))
+
+    def is_enabled(self, event=None):
+        return self._block_content(event) is not None
+
+    def is_visible(self, event=None):
+        return is_markdown(self.view) and self._block_content(event) is not None
 
 
 class MdTocFocusHeadingCommand(sublime_plugin.TextCommand):

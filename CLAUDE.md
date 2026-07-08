@@ -27,7 +27,14 @@ approach.
    - `Ctrl+Alt+T` toggles the pane; closing the TOC tab directly also works.
 6. Live behavior: refresh on edit (debounced), on save, retarget when
    switching Markdown tabs, underline the heading under the source caret.
-7. Installed via **symlink** from this repo to
+7. **Copy Code Block** (context menu + palette, deliberately NO hover popup
+   to avoid popup collisions with LSP/linters, and NO settings):
+   - Only plain column-0 ``` / ~~~ fenced pairs; no indented blocks, no
+     blockquoted fences, no inline code spans.
+   - Unclosed fence copies to EOF; copy includes a trailing newline.
+   - Context menu uses the mouse position (`want_event()`), palette falls
+     back to the caret; the menu entry hides itself outside code blocks.
+8. Installed via **symlink** from this repo to
    `~/Library/Application Support/Sublime Text/Packages/MarkdownTOC`
    (folder name MUST be `MarkdownTOC` — syntax/settings paths reference it).
 
@@ -41,6 +48,7 @@ approach.
 | `Default.sublime-keymap` | `Ctrl+Alt+T` toggle; `Enter` (context `md_toc_view`) |
 | `Default.sublime-mousemap` | Double-click jump (context-scoped!) |
 | `Default.sublime-commands` / `Main.sublime-menu` | Palette + menus |
+| `Context.sublime-menu` | Right-click *Copy Code Block* (visibility gated by `is_visible`) |
 | `.python-version` | `3.8` (ST4 plugin host) |
 
 ## Lessons Learned
@@ -63,6 +71,11 @@ approach.
   `sublime.find_resources("file name")` to locate package resources, with a
   graceful fallback (`scope:text.plain`). JSON menu files (`edit_settings`
   `base_file`) still need the canonical folder name — document that.
+- **Context-menu commands can act on the mouse position**: a `TextCommand`
+  with `want_event() -> True` receives the click `event`; convert with
+  `view.window_to_text((event["x"], event["y"]))`. `is_enabled`/`is_visible`
+  get the event too — use it to hide the menu entry when irrelevant. The
+  event is `None` when invoked from the Command Palette (fall back to caret).
 - **Mousemaps are global.** A `Default.sublime-mousemap` binding hijacks
   clicks everywhere unless given a `"context"` (same context system as
   keymaps; custom keys via `EventListener.on_query_context`).

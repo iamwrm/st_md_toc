@@ -8,6 +8,10 @@
         "command": "markdown_toc_refresh"
     },
     {
+        "caption": "Markdown TOC: Copy Code Block at Caret",
+        "command": "markdown_copy_code_block"
+    },
+    {
         "caption": "Preferences: Markdown TOC Settings",
         "command": "edit_settings",
         "args": {
