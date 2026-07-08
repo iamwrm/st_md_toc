@@ -1,0 +1,18 @@
+[
+    {
+        "caption": "Markdown TOC: Toggle Side Pane",
+        "command": "markdown_toc_toggle"
+    },
+    {
+        "caption": "Markdown TOC: Refresh",
+        "command": "markdown_toc_refresh"
+    },
+    {
+        "caption": "Preferences: Markdown TOC Settings",
+        "command": "edit_settings",
+        "args": {
+            "base_file": "${packages}/MarkdownTOC/Markdown TOC.sublime-settings",
+            "default": "{\n\t$0\n}\n"
+        }
+    }
+]

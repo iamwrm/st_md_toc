@@ -1,0 +1,42 @@
+%YAML 1.2
+---
+# Colors TOC entries by heading depth (2-space indent per level).
+name: Markdown TOC
+scope: text.markdown-toc
+hidden: true
+
+contexts:
+  main:
+    - match: '^\(no headings\)$'
+      scope: comment.no-headings.markdown-toc
+    - match: '^(?=\S)'
+      push: h1
+    - match: '^  (?=\S)'
+      push: h2
+    - match: '^    (?=\S)'
+      push: h3
+    - match: '^      (?=\S)'
+      push: h4
+    - match: '^ {8,}(?=\S)'
+      push: h5
+
+  h1:
+    - meta_scope: markup.heading.1.markdown-toc entity.name.section
+    - match: $
+      pop: true
+  h2:
+    - meta_scope: markup.heading.2.markdown-toc entity.name.function
+    - match: $
+      pop: true
+  h3:
+    - meta_scope: markup.heading.3.markdown-toc string
+    - match: $
+      pop: true
+  h4:
+    - meta_scope: markup.heading.4.markdown-toc constant.other
+    - match: $
+      pop: true
+  h5:
+    - meta_scope: markup.heading.5.markdown-toc comment
+    - match: $
+      pop: true

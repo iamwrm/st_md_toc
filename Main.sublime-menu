@@ -1,0 +1,36 @@
+[
+    {
+        "id": "view",
+        "children": [
+            {
+                "caption": "Markdown TOC",
+                "command": "markdown_toc_toggle"
+            }
+        ]
+    },
+    {
+        "id": "preferences",
+        "children": [
+            {
+                "id": "package-settings",
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "children": [
+                    {
+                        "caption": "Markdown TOC",
+                        "children": [
+                            {
+                                "caption": "Settings",
+                                "command": "edit_settings",
+                                "args": {
+                                    "base_file": "${packages}/MarkdownTOC/Markdown TOC.sublime-settings",
+                                    "default": "{\n\t$0\n}\n"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

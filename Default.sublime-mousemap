@@ -1,0 +1,11 @@
+[
+    // Double-click a TOC entry: jump to the heading and focus the source file
+    {
+        "button": "button1",
+        "count": 2,
+        "press_command": "md_toc_focus_heading",
+        "context": [
+            { "key": "md_toc_view", "operator": "equal", "operand": true }
+        ]
+    }
+]

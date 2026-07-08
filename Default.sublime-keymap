@@ -1,0 +1,15 @@
+[
+    // Toggle the TOC side pane
+    {
+        "keys": ["ctrl+alt+t"],
+        "command": "markdown_toc_toggle"
+    },
+    // Inside the TOC view: Enter jumps to the heading and focuses the file
+    {
+        "keys": ["enter"],
+        "command": "md_toc_focus_heading",
+        "context": [
+            { "key": "md_toc_view", "operator": "equal", "operand": true }
+        ]
+    }
+]
