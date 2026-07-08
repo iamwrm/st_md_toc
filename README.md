@@ -28,13 +28,13 @@ Clone (or symlink) this repository into your `Packages` directory as
 
 ```sh
 # macOS
-git clone <repo-url> "$HOME/Library/Application Support/Sublime Text/Packages/MarkdownTOC"
+git clone https://github.com/iamwrm/st_md_toc.git "$HOME/Library/Application Support/Sublime Text/Packages/MarkdownTOC"
 
 # Linux
-git clone <repo-url> "$HOME/.config/sublime-text/Packages/MarkdownTOC"
+git clone https://github.com/iamwrm/st_md_toc.git "$HOME/.config/sublime-text/Packages/MarkdownTOC"
 
 # Windows (PowerShell)
-git clone <repo-url> "$env:APPDATA\Sublime Text\Packages\MarkdownTOC"
+git clone https://github.com/iamwrm/st_md_toc.git "$env:APPDATA\Sublime Text\Packages\MarkdownTOC"
 ```
 
 > The folder **must** be named `MarkdownTOC` — the syntax and settings files
