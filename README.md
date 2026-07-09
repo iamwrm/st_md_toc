@@ -6,6 +6,10 @@ custom sidebar panel.
 
 ![](https://img.shields.io/badge/Sublime%20Text-4-orange)
 
+## Demo
+
+![Markdown TOC side pane demo](assets/demo.png)
+
 ## Features
 
 - **TOC side pane** on the left or right, indented by heading level and
