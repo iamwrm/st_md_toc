@@ -1,0 +1,133 @@
+{
+  "name": "markdown-toc",
+  "displayName": "Markdown TOC",
+  "description": "A live Markdown table of contents in the VS Code sidebar.",
+  "version": "0.1.0",
+  "publisher": "iamwrm",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamwrm/md_toc.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "markdown",
+    "outline",
+    "table of contents",
+    "toc"
+  ],
+  "main": "./dist/extension.js",
+  "browser": "./dist/extension.js",
+  "extensionKind": [
+    "ui"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onView:markdownToc.outline"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdownToc.show",
+        "title": "Markdown TOC: Show Outline"
+      },
+      {
+        "command": "markdownToc.refresh",
+        "title": "Markdown TOC: Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "markdownToc.copyCodeBlock",
+        "title": "Markdown TOC: Copy Code Block"
+      },
+      {
+        "command": "markdownToc.cutWholeSection",
+        "title": "Markdown TOC: Cut Whole Section"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "markdownToc",
+          "title": "Markdown TOC",
+          "icon": "assets/toc.svg"
+        }
+      ]
+    },
+    "views": {
+      "markdownToc": [
+        {
+          "id": "markdownToc.outline",
+          "name": "Outline"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "markdownToc.refresh",
+          "when": "view == markdownToc.outline",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "markdownToc.cutWholeSection",
+          "when": "editorLangId == markdown",
+          "group": "9_cutcopypaste@1"
+        },
+        {
+          "command": "markdownToc.copyCodeBlock",
+          "when": "editorLangId == markdown",
+          "group": "9_cutcopypaste@2"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "markdownToc.show",
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t",
+        "when": "editorLangId == markdown"
+      }
+    ],
+    "configuration": {
+      "title": "Markdown TOC",
+      "properties": {
+        "markdownToc.refreshDelay": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "description": "Delay in milliseconds before refreshing the outline after an edit."
+        },
+        "markdownToc.revealCurrentHeading": {
+          "type": "boolean",
+          "default": true,
+          "description": "Reveal the heading containing the editor cursor in the outline."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.js --bundle --external:vscode --platform=browser --format=cjs --outfile=dist/extension.js",
+    "check": "npm run build && npm test",
+    "package": "vsce package",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.0"
+  }
+}

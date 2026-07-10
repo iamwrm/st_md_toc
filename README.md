@@ -1,88 +1,70 @@
-# Markdown TOC (side pane)
+# Markdown TOC
 
-A Sublime Text 4 package that shows a live table of contents for the active
-Markdown file in a docked side pane — the closest thing Sublime offers to a
-custom sidebar panel.
+Markdown outline extensions for Sublime Text 4 and Visual Studio Code.
 
-![](https://img.shields.io/badge/Sublime%20Text-4-orange)
+![Markdown TOC side pane demo](st4/assets/demo.png)
 
-## Demo
+## Editor support
 
-![Markdown TOC side pane demo](assets/demo.png)
+| Editor | Source | Support |
+| --- | --- | --- |
+| Sublime Text 4 | [`st4/`](st4/) | Docked TOC pane, live refresh, navigation, copy code block, cut section |
+| VS Code | [`vscode/`](vscode/) | Activity-bar outline, live refresh, navigation, copy code block, cut section |
+| vscode.dev | [`vscode/`](vscode/) | Supported by the same browser-compatible VS Code bundle |
 
-## Features
+Both implementations understand ATX and Setext headings, ignore headings in
+fenced code blocks, and remove common inline Markdown from outline labels.
 
-- **TOC side pane** on the left or right, indented by heading level and
-  color-coded per depth.
-- **Click to navigate** — clicking an entry scrolls the file to that heading
-  (focus stays in the TOC). Press **Enter** or **double-click** to jump *and*
-  focus the file.
-- **Follows your caret** — the heading you're currently editing is underlined
-  in the TOC.
-- **Live refresh** — updates as you type (debounced), on save, and when you
-  switch between Markdown tabs.
-- Understands `#` ATX headings, Setext (`===` / `---`) headings, skips fenced
-  code blocks, and strips inline markup (links, `code`, *emphasis*) from
-  entries.
-- **Copy code block** — right-click anywhere inside a fenced ` ``` ` block and
-  choose *Copy Code Block*; the block's contents (fences stripped, trailing
-  newline included) land on the clipboard. Also in the Command Palette as
-  *Markdown TOC: Copy Code Block at Caret*.
-- **Cut a whole section** — right-click an ATX or Setext heading and choose
-  *Cut Whole Section*. The heading, its body, and nested subsections are cut;
-  the next heading at the same or a higher level is left in place.
+## Install Sublime Text 4
 
-## Installation
+Download the `MarkdownTOC-st4-*.zip` file from a release and extract the
+contained `MarkdownTOC` directory into Sublime Text's `Packages` directory.
+You can open that directory with **Preferences > Browse Packages**.
 
-Clone (or symlink) this repository into your `Packages` directory as
-`MarkdownTOC`:
+For development, clone this repository and link `st4/` into `Packages` under
+the exact name `MarkdownTOC`:
 
 ```sh
 # macOS
-git clone https://github.com/iamwrm/st_md_toc.git "$HOME/Library/Application Support/Sublime Text/Packages/MarkdownTOC"
+ln -s "$PWD/st4" "$HOME/Library/Application Support/Sublime Text/Packages/MarkdownTOC"
 
 # Linux
-git clone https://github.com/iamwrm/st_md_toc.git "$HOME/.config/sublime-text/Packages/MarkdownTOC"
-
-# Windows (PowerShell)
-git clone https://github.com/iamwrm/st_md_toc.git "$env:APPDATA\Sublime Text\Packages\MarkdownTOC"
+ln -s "$PWD/st4" "$HOME/.config/sublime-text/Packages/MarkdownTOC"
 ```
 
-> Name the folder `MarkdownTOC` (note: `git clone` defaults to `st_md_toc` —
-> add the target name as shown above). The plugin itself locates its files
-> dynamically, but the *Preferences ▸ Package Settings* menu entry references
-> the `MarkdownTOC` path.
-
-## Usage
-
-| Action | How |
-| --- | --- |
-| Toggle the TOC pane | `Ctrl+Alt+T`, **View ▸ Markdown TOC**, or Command Palette ▸ *Markdown TOC: Toggle Side Pane* |
-| Reveal a heading | Click its TOC entry |
-| Jump to a heading (and focus the file) | `Enter` or double-click in the TOC |
-| Force a refresh | Command Palette ▸ *Markdown TOC: Refresh* |
-| Copy a code block | Right-click inside it ▸ *Copy Code Block* (or Command Palette at caret) |
-| Cut a heading section | Right-click its heading ▸ *Cut Whole Section* |
-
-Closing the TOC (toggle again, or just close its tab) restores your previous
-window layout.
-
-## Settings
-
-**Preferences ▸ Package Settings ▸ Markdown TOC ▸ Settings**
-
-```jsonc
-{
-    "side": "right",              // "left" or "right"
-    "width": 0.25,                // pane width, fraction of the window (0.1–0.5)
-    "navigate_on_click": true,    // single click scrolls source to heading
-    "highlight_current": true,    // underline the heading under the caret
-    "scroll_toc_to_current": true,
-    "refresh_on_edit": true,      // rebuild while typing (debounced)
-    "refresh_delay_ms": 400,
-    "focus_toc_on_open": false
-}
+```powershell
+# Windows (run in an elevated shell or with Developer Mode enabled)
+New-Item -ItemType SymbolicLink `
+  -Path "$env:APPDATA\Sublime Text\Packages\MarkdownTOC" `
+  -Target "$PWD\st4"
 ```
+
+Use `Ctrl+Alt+T` to show or hide the pane. See [`st4/README.md`](st4/README.md)
+for all commands and settings.
+
+## Install VS Code
+
+Download the `.vsix` file from a release and run **Extensions: Install from
+VSIX...** in desktop VS Code. The extension contains a browser entry point and
+can also be published to the Visual Studio Marketplace for use on
+[vscode.dev](https://vscode.dev/).
+
+Use `Ctrl+Alt+T` (`Cmd+Alt+T` on macOS) to focus the Markdown TOC view. See
+[`vscode/README.md`](vscode/README.md) for commands and development steps.
+
+## Development
+
+```sh
+python -m unittest discover -s st4/tests
+python -m py_compile st4/md_toc.py
+
+cd vscode
+npm ci
+npm run check
+```
+
+CI runs both suites. Tags matching `v*` create a GitHub release containing a
+ready-to-extract Sublime Text zip and a VS Code VSIX.
 
 ## License
 

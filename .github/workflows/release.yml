@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+      - name: Test Sublime Text package
+        run: |
+          python -m unittest discover -s st4/tests
+          python -m py_compile st4/md_toc.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: vscode/package-lock.json
+      - name: Test and package VS Code extension
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          npm ci --prefix vscode
+          npm run check --prefix vscode
+          npm version "${TAG#v}" --no-git-tag-version --prefix vscode
+          mkdir -p dist
+          npm run package --prefix vscode -- --out "${GITHUB_WORKSPACE}/dist/markdown-toc-vscode-${TAG}.vsix"
+
+      - name: Package Sublime Text extension
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir -p dist/MarkdownTOC
+          rsync -a \
+            --exclude '.python-version' \
+            --exclude '__pycache__' \
+            --exclude 'tests' \
+            st4/ dist/MarkdownTOC/
+          cd dist
+          zip -r "MarkdownTOC-st4-${TAG}.zip" MarkdownTOC
+          rm -rf MarkdownTOC
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" dist/* --generate-notes --verify-tag
