@@ -21,6 +21,8 @@ jobs:
         run: |
           python -m unittest discover -s st4/tests
           python -m py_compile st4/md_toc.py
+          python -m unittest discover -s vscode/test -p 'test_*.py'
+          python -m py_compile vscode/serve_vscode_dev.py
 
       - uses: actions/setup-node@v4
         with:

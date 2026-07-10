@@ -52,6 +52,13 @@ can also be published to the Visual Studio Marketplace for use on
 Use `Ctrl+Alt+T` (`Cmd+Alt+T` on macOS) to focus the Markdown TOC view. See
 [`vscode/README.md`](vscode/README.md) for commands and development steps.
 
+To sideload the web extension on vscode.dev without publishing it to the
+Marketplace, run the included `uv`-managed HTTPS server:
+
+```sh
+uv run --script vscode/serve_vscode_dev.py --install-mkcert --open
+```
+
 ## Development
 
 ```sh

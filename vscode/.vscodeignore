@@ -2,6 +2,9 @@
 .vscode/**
 src/**
 test/**
+serve_vscode_dev.py
+__pycache__/**
+*.py[cod]
 node_modules/**
 package-lock.json
 *.vsix
