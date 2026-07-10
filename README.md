@@ -28,6 +28,9 @@ custom sidebar panel.
   choose *Copy Code Block*; the block's contents (fences stripped, trailing
   newline included) land on the clipboard. Also in the Command Palette as
   *Markdown TOC: Copy Code Block at Caret*.
+- **Cut a whole section** — right-click an ATX or Setext heading and choose
+  *Cut Whole Section*. The heading, its body, and nested subsections are cut;
+  the next heading at the same or a higher level is left in place.
 
 ## Installation
 
@@ -59,6 +62,7 @@ git clone https://github.com/iamwrm/st_md_toc.git "$env:APPDATA\Sublime Text\Pac
 | Jump to a heading (and focus the file) | `Enter` or double-click in the TOC |
 | Force a refresh | Command Palette ▸ *Markdown TOC: Refresh* |
 | Copy a code block | Right-click inside it ▸ *Copy Code Block* (or Command Palette at caret) |
+| Cut a heading section | Right-click its heading ▸ *Cut Whole Section* |
 
 Closing the TOC (toggle again, or just close its tab) restores your previous
 window layout.
