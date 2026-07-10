@@ -1,5 +1,9 @@
 [
     {
+        "caption": "Cut Whole Section",
+        "command": "markdown_cut_whole_section"
+    },
+    {
         "caption": "Copy Code Block",
         "command": "markdown_copy_code_block"
     }

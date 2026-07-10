@@ -138,6 +138,43 @@ def is_markdown(view):
     return name.endswith((".md", ".markdown", ".mdown", ".mkd", ".mkdn"))
 
 
+def heading_section_region(view, row):
+    """Return the full section region for the heading at ``row``.
+
+    A section ends immediately before the next heading at the same or a
+    higher level. Lower-level headings are part of the section. For Setext
+    headings, either the title row or its underline row identifies the
+    section.
+    """
+    headings = parse_headings(view)
+    if not headings:
+        return None
+
+    content = view.substr(sublime.Region(0, view.size()))
+    lines = content.split("\n")
+    heading_index = None
+    for i, (heading_row, _level, _text) in enumerate(headings):
+        if row == heading_row:
+            heading_index = i
+            break
+        if (row == heading_row + 1 and row < len(lines)
+                and not ATX_RE.match(lines[heading_row])
+                and SETEXT_RE.match(lines[row])):
+            heading_index = i
+            break
+    if heading_index is None:
+        return None
+
+    heading_row, level, _text = headings[heading_index]
+    start = view.text_point(heading_row, 0)
+    end = view.size()
+    for next_row, next_level, _next_text in headings[heading_index + 1:]:
+        if next_level <= level:
+            end = view.text_point(next_row, 0)
+            break
+    return sublime.Region(start, end)
+
+
 # ---------------------------------------------------------------------------
 # TOC view helpers
 # ---------------------------------------------------------------------------
@@ -444,6 +481,47 @@ class MarkdownCopyCodeBlockCommand(sublime_plugin.TextCommand):
 
     def is_visible(self, event=None):
         return is_markdown(self.view) and self._block_content(event) is not None
+
+
+class MarkdownCutWholeSectionCommand(sublime_plugin.TextCommand):
+    """Cut the heading under the mouse / caret and its complete section."""
+
+    def want_event(self):
+        return True
+
+    def _point(self, event):
+        if event is not None:
+            return self.view.window_to_text((event["x"], event["y"]))
+        sel = self.view.sel()
+        return sel[0].begin() if sel else None
+
+    def _section(self, event):
+        if not is_markdown(self.view):
+            return None
+        pt = self._point(event)
+        if pt is None:
+            return None
+        return heading_section_region(self.view, self.view.rowcol(pt)[0])
+
+    def run(self, edit, event=None):
+        section = self._section(event)
+        if section is None:
+            sublime.status_message("Markdown TOC: no heading here")
+            return
+        text = self.view.substr(section)
+        sublime.set_clipboard(text)
+        self.view.erase(edit, section)
+        line_count = len(text.splitlines())
+        sublime.status_message(
+            "Markdown TOC: cut %d line%s"
+            % (line_count, "" if line_count == 1 else "s"))
+
+    def is_enabled(self, event=None):
+        return (not self.view.is_read_only()
+                and self._section(event) is not None)
+
+    def is_visible(self, event=None):
+        return is_markdown(self.view) and self._section(event) is not None
 
 
 class MdTocFocusHeadingCommand(sublime_plugin.TextCommand):
