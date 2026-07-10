@@ -33,7 +33,7 @@ jobs:
         run: |
           npm ci --prefix vscode
           npm run check --prefix vscode
-          npm version "${TAG#v}" --no-git-tag-version --prefix vscode
+          npm version "${TAG#v}" --no-git-tag-version --allow-same-version --prefix vscode
           mkdir -p dist
           npm run package --prefix vscode -- --out "${GITHUB_WORKSPACE}/dist/markdown-toc-vscode-${TAG}.vsix"
 
