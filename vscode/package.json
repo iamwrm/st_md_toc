@@ -53,6 +53,10 @@
         "title": "Markdown TOC: Copy Code Block"
       },
       {
+        "command": "markdownToc.copyLinkContents",
+        "title": "Markdown TOC: Copy Link Contents"
+      },
+      {
         "command": "markdownToc.cutWholeSection",
         "title": "Markdown TOC: Cut Whole Section"
       }
@@ -92,6 +96,11 @@
           "command": "markdownToc.copyCodeBlock",
           "when": "editorLangId == markdown",
           "group": "9_cutcopypaste@2"
+        },
+        {
+          "command": "markdownToc.copyLinkContents",
+          "when": "editorLangId == markdown",
+          "group": "9_cutcopypaste@3"
         }
       ]
     },
@@ -129,5 +138,9 @@
   "devDependencies": {
     "@vscode/vsce": "^3.6.0",
     "esbuild": "^0.25.0"
+  },
+  "dependencies": {
+    "@ar-nelson/foldcase": "^1.0.1",
+    "entities": "^4.5.0"
   }
 }

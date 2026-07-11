@@ -1,5 +1,9 @@
 [
     {
+        "caption": "Copy Link Contents",
+        "command": "markdown_copy_link_contents"
+    },
+    {
         "caption": "Cut Whole Section",
         "command": "markdown_cut_whole_section"
     },

@@ -45,7 +45,6 @@ jobs:
         run: |
           mkdir -p dist/MarkdownTOC
           rsync -a \
-            --exclude '.python-version' \
             --exclude '__pycache__' \
             --exclude 'tests' \
             st4/ dist/MarkdownTOC/

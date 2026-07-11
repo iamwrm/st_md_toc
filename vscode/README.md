@@ -9,11 +9,29 @@ used by [vscode.dev](https://vscode.dev/).
 - `Markdown TOC: Show Outline` (`Ctrl+Alt+T`, or `Cmd+Alt+T` on macOS)
 - `Markdown TOC: Refresh`
 - `Markdown TOC: Copy Code Block`
+- `Markdown TOC: Copy Link Contents`
 - `Markdown TOC: Cut Whole Section`
 
-The latter two commands are also available from the Markdown editor context
+The latter three commands are also available from the Markdown editor context
 menu. Copy Code Block supports unindented backtick and tilde fences. Cut Whole
 Section removes the selected heading, its body, and nested subsections.
+
+Copy Link Contents loads the non-image Markdown text link under the cursor or
+selection and copies the linked UTF-8 text to the clipboard. It understands
+inline links, full/collapsed/shortcut reference links, angle-bracket
+destinations, optional titles, and HTTP(S) URI autolinks. Local links must
+be readable through the VS Code file-system API, which supports workspace files,
+standalone desktop files, and file-system providers available to vscode.dev.
+HTTP and HTTPS links use the extension host's fetch API, so vscode.dev requires
+the remote server to allow CORS. Relative links are resolved from the file that
+contains them, and Markdown text links inside loaded files are recursively replaced
+with their contents. Fragment-only, email, and other non-resource links remain
+unchanged. The command rejects cycles, recursion beyond 20 files, non-text data,
+individual resources larger than 1 MiB, more than 10,000 expandable links in
+one resource, or an operation exceeding 1,000 fetched resources, 10,000 parsed
+links, or 20,971,520 fetched/expanded characters. HTTP requests time out after
+15 seconds and can be cancelled from the progress notification. The clipboard
+remains unchanged if any linked resource cannot be loaded safely.
 
 ## Sideload on vscode.dev
 

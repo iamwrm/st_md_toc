@@ -8,12 +8,22 @@ Markdown outline extensions for Sublime Text 4 and Visual Studio Code.
 
 | Editor | Source | Support |
 | --- | --- | --- |
-| Sublime Text 4 | [`st4/`](st4/) | Docked TOC pane, live refresh, navigation, copy code block, cut section |
-| VS Code | [`vscode/`](vscode/) | Activity-bar outline, live refresh, navigation, copy code block, cut section |
+| Sublime Text 4 | [`st4/`](st4/) | Docked TOC pane, live refresh, navigation, copy code block, copy link contents, cut section |
+| VS Code | [`vscode/`](vscode/) | Activity-bar outline, live refresh, navigation, copy code block, copy link contents, cut section |
 | vscode.dev | [`vscode/`](vscode/) | Supported by the same browser-compatible VS Code bundle |
 
 Both implementations understand ATX and Setext headings, ignore headings in
 fenced code blocks, and remove common inline Markdown from outline labels.
+They also provide **Copy Link Contents** in the Markdown context menu: it loads
+a local or HTTP(S) text link, recursively replaces nested Markdown text links,
+and copies the expanded result. Inline links, full/collapsed/shortcut reference
+links, angle-bracket destinations, optional titles, and HTTP(S) URI autolinks
+use their normal Markdown syntax. Non-resource links such as `#section` and
+`mailto:` remain unchanged. Cycles and chains deeper than 20 resources are
+rejected without changing the clipboard. Resource, link-count, and expanded
+output limits prevent pathological documents from exhausting the editor. On
+vscode.dev, HTTP servers must allow CORS because fetching runs in the browser
+extension host.
 
 ## Install Sublime Text 4
 
