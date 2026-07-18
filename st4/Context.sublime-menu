@@ -10,5 +10,9 @@
     {
         "caption": "Copy Code Block",
         "command": "markdown_copy_code_block"
+    },
+    {
+        "caption": "Limit Blank Lines to 2",
+        "command": "markdown_limit_blank_lines"
     }
 ]

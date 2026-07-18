@@ -157,6 +157,27 @@ def fenced_code_blocks(lines):
     return blocks
 
 
+def limit_blank_lines(lines, protected_rows=None):
+    """Collapse every run of 3+ blank lines into exactly 2.
+
+    Whitespace-only lines count as blank. Rows in ``protected_rows``
+    (e.g. inside fenced code blocks) are never treated as blank, so
+    their runs are left untouched.
+    """
+    protected = protected_rows or set()
+    out = []
+    run = 0
+    for i, line in enumerate(lines):
+        if not line.strip() and i not in protected:
+            run += 1
+            if run > 2:
+                continue
+        else:
+            run = 0
+        out.append(line)
+    return out
+
+
 def is_markdown(view):
     if not view or view.settings().get(S_IS_TOC):
         return False
@@ -1733,6 +1754,35 @@ class MarkdownCutWholeSectionCommand(sublime_plugin.TextCommand):
 
     def is_visible(self, event=None):
         return is_markdown(self.view) and self._section(event) is not None
+
+
+class MarkdownLimitBlankLinesCommand(sublime_plugin.TextCommand):
+    """Collapse runs of 3+ blank lines into 2 across the whole file.
+
+    Blank lines inside fenced code blocks are preserved in Markdown files.
+    """
+
+    def run(self, edit):
+        view = self.view
+        whole = sublime.Region(0, view.size())
+        lines = view.substr(whole).split("\n")
+        protected = set()
+        if is_markdown(view):
+            for open_row, close_row in fenced_code_blocks(lines):
+                end = close_row if close_row is not None else len(lines) - 1
+                protected.update(range(open_row, end + 1))
+        new_lines = limit_blank_lines(lines, protected)
+        removed = len(lines) - len(new_lines)
+        if not removed:
+            sublime.status_message("Markdown TOC: no extra blank lines")
+            return
+        view.replace(edit, whole, "\n".join(new_lines))
+        sublime.status_message(
+            "Markdown TOC: removed %d blank line%s"
+            % (removed, "" if removed == 1 else "s"))
+
+    def is_enabled(self):
+        return not self.view.is_read_only()
 
 
 class MdTocFocusHeadingCommand(sublime_plugin.TextCommand):

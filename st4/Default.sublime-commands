@@ -16,6 +16,10 @@
         "command": "markdown_copy_code_block"
     },
     {
+        "caption": "Markdown TOC: Limit Blank Lines to 2",
+        "command": "markdown_limit_blank_lines"
+    },
+    {
         "caption": "Preferences: Markdown TOC Settings",
         "command": "edit_settings",
         "args": {

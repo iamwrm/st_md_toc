@@ -174,6 +174,48 @@ class HeadingSectionTests(unittest.TestCase):
         self.assertEqual(view.text, "## Keep\nrest\n")
 
 
+class LimitBlankLinesTests(unittest.TestCase):
+    def squash(self, text, markdown=True):
+        lines = text.split("\n")
+        protected = set()
+        if markdown:
+            for open_row, close_row in md_toc.fenced_code_blocks(lines):
+                end = close_row if close_row is not None else len(lines) - 1
+                protected.update(range(open_row, end + 1))
+        return "\n".join(md_toc.limit_blank_lines(lines, protected))
+
+    def test_three_or_more_blanks_collapse_to_two(self):
+        self.assertEqual(self.squash("a\n\n\n\nb"), "a\n\n\nb")
+        self.assertEqual(self.squash("a\n\n\n\n\n\n\nb"), "a\n\n\nb")
+
+    def test_one_and_two_blanks_untouched(self):
+        self.assertEqual(self.squash("a\n\nb"), "a\n\nb")
+        self.assertEqual(self.squash("a\n\n\nb"), "a\n\n\nb")
+        self.assertEqual(self.squash("a\nb"), "a\nb")
+
+    def test_whitespace_only_lines_count_as_blank(self):
+        self.assertEqual(self.squash("a\n  \n\t\n \nb"), "a\n  \n\t\nb")
+
+    def test_leading_and_trailing_runs_are_limited(self):
+        self.assertEqual(self.squash("\n\n\n\na\n\n\n\n"), "\n\na\n\n")
+
+    def test_blank_lines_inside_fences_are_preserved(self):
+        text = "a\n\n\n\n```\nx\n\n\n\n\ny\n```\n\n\n\nb"
+        self.assertEqual(
+            self.squash(text),
+            "a\n\n\n```\nx\n\n\n\n\ny\n```\n\n\nb",
+        )
+
+    def test_unclosed_fence_protects_to_eof(self):
+        text = "a\n\n\n\n```\nx\n\n\n\n\ny"
+        self.assertEqual(self.squash(text), "a\n\n\n```\nx\n\n\n\n\ny")
+
+    def test_without_markdown_fences_are_not_protected(self):
+        text = "```\nx\n\n\n\ny\n```"
+        self.assertEqual(
+            self.squash(text, markdown=False), "```\nx\n\n\ny\n```")
+
+
 class InlineTextLinkTests(unittest.TestCase):
     def test_parser_handles_destinations_and_ignores_non_links(self):
         text = (
